@@ -1,0 +1,11 @@
+{
+  "name": "image-optim",
+  "version": "1.0.0",
+  "description": "Image optim installation for WorDPress",
+  "author": "Nicolas JUEN",
+  "dependencies": {
+    "imagemin": "^5.2.1",
+    "imagemin-mozjpeg": "^6.0.0",
+    "imagemin-pngquant": "^5.0.0"
+  }
+}
