@@ -199,7 +199,7 @@ class WP_Image_Optim_Optimizer {
 	 */
 	public function optimize() {
 		$this->image->set_original_size();
-		$this->optim_image( $this->image->get_file_path(), $this->image->get_directory() );
+		$this->optimize_image( $this->image->get_file_path(), $this->image->get_directory() );
 		return true;
 	}
 
@@ -209,7 +209,7 @@ class WP_Image_Optim_Optimizer {
 	 * @param $file
 	 * @param $destination
 	 */
-	private function optim_image( $file, $destination ) {
+	private function optimize_image( $file, $destination ) {
 		$command = sprintf( 'nodejs %s %s %s', plugin_dir_path( __FILE__ ) . 'imageoptim.js', $file, $destination );
 		shell_exec( escapeshellcmd( $command ) );
 		clearstatcache();
