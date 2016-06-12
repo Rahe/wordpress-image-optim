@@ -13,8 +13,6 @@ You can change the values for png and jpg qualities on imageoptim.js file.
 Have fun ;)
 
 TODO :
- * Add security
  * Add Javascript on it
- * Redirect on image single with the message of optimized element
  * Add WP-CLI support
  * Add bulk optimize

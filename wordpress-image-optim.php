@@ -11,7 +11,7 @@ Author URI: http://nicolas-juen.fr
 add_filter( 'media_row_actions', 'wp_image_option_add_actions_list', 10, 2 );
 
 function wp_image_option_add_actions_list( $actions, $object ) {
-	if ( ! wp_attachment_is_image( $object->ID ) ) {
+	if ( ! wp_attachment_is_image( $object->ID ) || ! current_user_can( 'upload_files' ) ) {
 		return $actions;
 	}
 
@@ -29,7 +29,10 @@ function wp_image_option_add_actions_list( $actions, $object ) {
 	$actions['wp-image-optim'] = sprintf(
 		"%s <a href='%s'>%s</a>",
 		$versus,
-		add_query_arg( array( 'action' => 'wp-image-optim', 'id' => $object->ID ), admin_url( '/' ) ),
+		wp_nonce_url(add_query_arg( array(
+			'action' => 'wp-image-optim',
+			'id' => $object->ID,
+		), admin_url( '/admin-post.php' ) ), 'wp-image-optim-'.$object->ID ),
 		esc_html__( 'Optimize', 'wordpress-image-optim' )
 	);
 
@@ -37,16 +40,76 @@ function wp_image_option_add_actions_list( $actions, $object ) {
 	return $actions;
 }
 
-add_action( 'admin_init', 'wp_image_option_admin_init' );
-function wp_image_option_admin_init() {
-	if ( ! isset( $_GET['action'] ) || ! isset( $_GET['id'] ) || 'wp-image-optim' !== $_GET['action'] ) {
+
+
+function wp_image_optim_notice() {
+	$messages = [
+		0 => 'Sorry attachment ID is missing',
+		1 => 'Security error',
+		2 => 'This attachment is not an image',
+		3 => 'Image optimized !',
+	];
+
+	if ( ! isset( $_GET['wp-image-optim'] ) || ! isset( $_GET['code'] ) || ! isset( $messages[ $_GET['code'] ] ) ) {
 		return;
+	}
+	?>
+	<div class="updated notice">
+		<p><?php echo $messages[ $_GET['code'] ]; ?></p>
+	</div>
+	<?php
+}
+add_action( 'admin_notices', 'wp_image_optim_notice' );
+
+add_action( 'admin_post_wp-image-optim', 'wp_image_optim_admin_post' );
+function wp_image_optim_admin_post() {
+	/**
+	 * Missing id
+	 */
+	if ( ! isset( $_GET['id'] ) ) {
+		wp_safe_redirect( add_query_arg( [
+				'code' => 0,
+				'wp-image-optim' => '',
+			],
+			admin_url( 'upload.php' ) )
+		);
+		exit;
+	}
+
+	/**
+	 * Security error
+	 */
+	if ( ! current_user_can( 'upload_files' ) ) {
+		wp_safe_redirect( add_query_arg( [
+				'code' => 1,
+				'wp-image-optim' => '',
+			],
+			admin_url( 'upload.php' ) )
+		);
+		exit;
 	}
 
 	$id = (int) $_GET['id'];
+	$nonce = isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : false ;
+
+	if ( ! wp_verify_nonce( $nonce, 'wp-image-optim-'.$id ) ) {
+		wp_safe_redirect( add_query_arg( [
+				'code' => 1,
+				'wp-image-optim' => '',
+			],
+				admin_url( 'upload.php' ) )
+		);
+		exit;
+	}
 
 	if ( ! wp_attachment_is_image( $id ) ) {
-		return;
+		wp_safe_redirect( add_query_arg( [
+				'code' => 2,
+				'wp-image-optim' => '',
+			],
+				admin_url( 'upload.php' ) )
+		);
+		exit;
 	}
 
 	try {
@@ -56,6 +119,15 @@ function wp_image_option_admin_init() {
 	}
 	$optimizer = new WP_Image_Optim_Optimizer( $image );
 	$optimizer->optimize();
+
+	wp_safe_redirect( add_query_arg(
+			[
+				'code' => 3,
+				'wp-image-optim' => '',
+			],
+			admin_url( 'upload.php' ) )
+	);
+	exit;
 }
 
 Class WP_Image_Optim {
