@@ -17,29 +17,28 @@ function wp_image_option_add_actions_list( $actions, $object ) {
 
 	// Add action for regeneration
 	$attachment = new WP_Image_Optim( $object );
-	$original = (float) $attachment->get_original_size();
-	$optimized = (float) $attachment->get_size();
-	$percent = number_format( $attachment->get_optim_percentage(), 0 );
+	$original   = (float) $attachment->get_original_size();
+	$optimized  = (float) $attachment->get_size();
+	$percent    = number_format( $attachment->get_optim_percentage(), 0 );
 
 	/**
 	 * Versus text with the optimized size
 	 */
-	$versus = ! $attachment->is_optimized() ? '' : sprintf( '%s VS %s ( %s %% )', size_format( $optimized ), size_format( $original ), $percent ) ;
+	$versus = ! $attachment->is_optimized() ? '' : sprintf( '%s VS %s ( %s %% )', size_format( $optimized ), size_format( $original ), $percent );
 
 	$actions['wp-image-optim'] = sprintf(
 		"%s <a href='%s'>%s</a>",
 		$versus,
-		wp_nonce_url(add_query_arg( array(
+		wp_nonce_url( add_query_arg( array(
 			'action' => 'wp-image-optim',
-			'id' => $object->ID,
-		), admin_url( '/admin-post.php' ) ), 'wp-image-optim-'.$object->ID ),
+			'id'     => $object->ID,
+		), admin_url( '/admin-post.php' ) ), 'wp-image-optim-' . $object->ID ),
 		esc_html__( 'Optimize', 'wordpress-image-optim' )
 	);
 
 	// Return actions
 	return $actions;
 }
-
 
 
 function wp_image_optim_notice() {
@@ -59,6 +58,7 @@ function wp_image_optim_notice() {
 	</div>
 	<?php
 }
+
 add_action( 'admin_notices', 'wp_image_optim_notice' );
 
 add_action( 'admin_post_wp-image-optim', 'wp_image_optim_admin_post' );
@@ -68,10 +68,10 @@ function wp_image_optim_admin_post() {
 	 */
 	if ( ! isset( $_GET['id'] ) ) {
 		wp_safe_redirect( add_query_arg( [
-				'code' => 0,
+				'code'           => 0,
 				'wp-image-optim' => '',
 			],
-			admin_url( 'upload.php' ) )
+				admin_url( 'upload.php' ) )
 		);
 		exit;
 	}
@@ -81,20 +81,20 @@ function wp_image_optim_admin_post() {
 	 */
 	if ( ! current_user_can( 'upload_files' ) ) {
 		wp_safe_redirect( add_query_arg( [
-				'code' => 1,
+				'code'           => 1,
 				'wp-image-optim' => '',
 			],
-			admin_url( 'upload.php' ) )
+				admin_url( 'upload.php' ) )
 		);
 		exit;
 	}
 
-	$id = (int) $_GET['id'];
-	$nonce = isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : false ;
+	$id    = (int) $_GET['id'];
+	$nonce = isset( $_GET['_wpnonce'] ) ? $_GET['_wpnonce'] : false;
 
-	if ( ! wp_verify_nonce( $nonce, 'wp-image-optim-'.$id ) ) {
+	if ( ! wp_verify_nonce( $nonce, 'wp-image-optim-' . $id ) ) {
 		wp_safe_redirect( add_query_arg( [
-				'code' => 1,
+				'code'           => 1,
 				'wp-image-optim' => '',
 			],
 				admin_url( 'upload.php' ) )
@@ -104,7 +104,7 @@ function wp_image_optim_admin_post() {
 
 	if ( ! wp_attachment_is_image( $id ) ) {
 		wp_safe_redirect( add_query_arg( [
-				'code' => 2,
+				'code'           => 2,
 				'wp-image-optim' => '',
 			],
 				admin_url( 'upload.php' ) )
@@ -122,7 +122,7 @@ function wp_image_optim_admin_post() {
 
 	wp_safe_redirect( add_query_arg(
 			[
-				'code' => 3,
+				'code'           => 3,
 				'wp-image-optim' => '',
 			],
 			admin_url( 'upload.php' ) )
@@ -157,16 +157,16 @@ Class WP_Image_Optim {
 	 * @throws Exception
 	 */
 	public function __construct( WP_Post $attachment ) {
-		if( ! wp_attachment_is_image( $attachment ) ) {
-			throw new \Exception( sprintf( '%s is not an image', $attachment->ID ));
+		if ( ! wp_attachment_is_image( $attachment ) ) {
+			throw new \Exception( sprintf( '%s is not an image', $attachment->ID ) );
 		}
 
 		/**
 		 * Set vars
 		 */
 		$this->attachment = $attachment;
-		$this->file_path = get_attached_file( $attachment->ID );
-		$this->directory = str_replace( basename( $this->file_path ), '', $this->file_path );
+		$this->file_path  = get_attached_file( $attachment->ID );
+		$this->directory  = str_replace( basename( $this->file_path ), '', $this->file_path );
 	}
 
 	/**
@@ -212,7 +212,8 @@ Class WP_Image_Optim {
 	 */
 	public function get_original_size() {
 		$size = get_post_meta( $this->attachment->ID, self::META_ORIGINAL_SIZE, true );
-		return empty( $size ) ? $this->get_size() : $size ;
+
+		return empty( $size ) ? $this->get_size() : $size;
 	}
 
 	/**
@@ -229,6 +230,7 @@ Class WP_Image_Optim {
 	 */
 	public function is_optimized() {
 		$size = get_post_meta( $this->attachment->ID, self::META_ORIGINAL_SIZE, true );
+
 		return ! empty( $size );
 	}
 
@@ -238,7 +240,7 @@ Class WP_Image_Optim {
 	 * @return float|int
 	 */
 	public function get_optim_percentage() {
-		if( ! $this->is_optimized() ) {
+		if ( ! $this->is_optimized() ) {
 			return 0;
 		}
 
@@ -272,6 +274,7 @@ class WP_Image_Optim_Optimizer {
 	public function optimize() {
 		$this->image->set_original_size();
 		$this->optimize_image( $this->image->get_file_path(), $this->image->get_directory() );
+
 		return true;
 	}
 
