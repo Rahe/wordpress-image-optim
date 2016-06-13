@@ -13,4 +13,4 @@ imagemin([process.argv[2]],
 		]
 	}).catch(error => {
 	console.error(error);
-} );
+});
