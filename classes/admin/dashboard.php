@@ -1,5 +1,5 @@
 <?php
-class Wp_Optim_Dashboard_Stats{
+class Wp_Optim_Admin_Dashboard_Stats{
 	function __construct() {
 		add_action( 'wp_dashboard_setup', array( __CLASS__, 'add_widgets' ) );
 
