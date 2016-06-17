@@ -9,7 +9,7 @@ class Wp_Optim_Admin_Actions {
 		add_action( 'admin_post_wp-image-optim-thumbs', [ __CLASS__, 'image_thumbnails_optim' ] );
 	}
 
-	function image_optim() {
+	public static function image_optim() {
 		/**
 		 * Missing id
 		 */
@@ -77,7 +77,7 @@ class Wp_Optim_Admin_Actions {
 		exit;
 	}
 
-	function image_thumbnails_optim() {
+	public static function image_thumbnails_optim() {
 		/**
 		 * Missing id
 		 */

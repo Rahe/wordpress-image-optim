@@ -25,7 +25,7 @@ class WP_Image_Optim_Optimizer {
 	public function optimize() {
 		$this->image->set_original_size();
 		$this->optimize_image( $this->image->get_file_path(), $this->image->get_directory() );
-
+		$this->image->get_size();
 		return true;
 	}
 
@@ -42,6 +42,8 @@ class WP_Image_Optim_Optimizer {
 			$this->optimize_image( str_replace( basename( $file ), $size_info['file'], $file ), $this->image->get_directory() );
 		}
 
+		$this->image->get_original_thumbnails_size();
+
 		return true;
 	}
 
@@ -52,7 +54,7 @@ class WP_Image_Optim_Optimizer {
 	 * @param $destination
 	 */
 	private function optimize_image( $file, $destination ) {
-		$command = sprintf( 'nodejs %s %s %s', plugin_dir_path( __FILE__ ) . 'imageoptim.js', $file, $destination );
+		$command = sprintf( 'nodejs %s %s %s', WP_OPTIM_DIR . 'imageoptim.js', $file, $destination );
 		shell_exec( escapeshellcmd( $command ) );
 		clearstatcache();
 	}

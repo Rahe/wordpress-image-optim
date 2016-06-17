@@ -39,7 +39,7 @@ if( is_admin() ) {
  * Generate the node modules in background on activation
  */
 function wp_image_optim_activate() {
-	$command = sprintf( 'npm install --prefix %s', plugin_dir_path( __FILE__ ) );
+	$command = sprintf( 'npm install --prefix %s', WP_OPTIM_DIR );
 	exec::background( escapeshellcmd( $command ) );
 }
 
