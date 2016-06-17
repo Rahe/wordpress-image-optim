@@ -8,9 +8,12 @@ Author: Nicolas JUEN
 Author URI: http://nicolas-juen.fr
 */
 
-include 'libs/exec.php';
-add_filter( 'media_row_actions', 'wp_image_option_add_actions_list', 10, 2 );
+define( 'WP_OPTIM_URL', plugin_dir_url( __FILE__ ) );
+define( 'WP_OPTIM_DIR', plugin_dir_path( __FILE__ ) );
 
+include WP_OPTIM_DIR.'/libs/exec.php';
+include WP_OPTIM_DIR.'/classes/admin/dashboard.php';
+add_filter( 'media_row_actions', 'wp_image_option_add_actions_list', 10, 2 );
 
 add_action('add_attachment', 'wp_image_optim_add_attachment');
 function wp_image_optim_add_attachment($post_ID) {
@@ -263,7 +266,11 @@ function wp_optimize_get_total_original_formated() {
 }
 
 function wp_optimize_get_percentage() {
-	return ( wp_optimize_get_total_original() - wp_optimize_get_total_optimized() ) / wp_optimize_get_total_original() * 100;
+	return number_format_i18n( ( wp_optimize_get_total_original() - wp_optimize_get_total_optimized() ) / wp_optimize_get_total_original() * 100, 2 );
+}
+
+function wp_optimize_get_diff() {
+	return size_format( wp_optimize_get_total_original() - wp_optimize_get_total_optimized() );
 }
 
 Class WP_Image_Optim {
@@ -535,3 +542,5 @@ class WP_Image_Optim_Optimizer {
 }
 
 register_activation_hook( __FILE__, 'wp_image_optim_activate' );
+
+new Wp_Optim_Dashboard_Stats();
