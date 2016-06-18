@@ -12,11 +12,11 @@ class WP_Image_Optim_Statistics {
 	}
 
 	public static function wp_optimize_get_total_optimized_formated() {
-		return size_format( self::wp_optimize_get_total_optimized(), 0 );
+		return size_format( self::wp_optimize_get_total_optimized(), 2 );
 	}
 
 	public static function wp_optimize_get_total_original_formated() {
-		return size_format( self::wp_optimize_get_total_original(), 0 );
+		return size_format( self::wp_optimize_get_total_original(), 2 );
 	}
 
 	public static function wp_optimize_get_percentage() {
@@ -24,7 +24,7 @@ class WP_Image_Optim_Statistics {
 	}
 
 	public static function wp_optimize_get_diff() {
-		return size_format( self::wp_optimize_get_total_original() - self::wp_optimize_get_total_optimized() );
+		return size_format( self::wp_optimize_get_total_original() - self::wp_optimize_get_total_optimized(), 2 );
 	}
 
 }
