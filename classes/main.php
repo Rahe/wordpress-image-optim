@@ -20,5 +20,6 @@ class Wp_Optim_Main{
 		}
 		$optimizer = new WP_Image_Optim_Optimizer( $image );
 		$optimizer->optimize();
+		$optimizer->optimize_thumbs();
 	}
 }

@@ -31,6 +31,7 @@ if( is_admin() ) {
 	include WP_OPTIM_DIR.'/classes/admin/dashboard.php';
 	include WP_OPTIM_DIR.'/classes/admin/image-actions.php';
 	include WP_OPTIM_DIR.'/classes/admin/main.php';
+	include WP_OPTIM_DIR.'/classes/admin/settings.php';
 }
 
 
@@ -54,6 +55,7 @@ function wp_image_optim_init() {
 		new Wp_Optim_Admin_Main();
 		new Wp_Optim_Admin_Actions();
 		new Wp_Optim_Admin_Dashboard_Stats();
+		new Wp_Optim_Admin_Settings();
 	}
 
 }
