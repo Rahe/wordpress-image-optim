@@ -5,7 +5,7 @@ class Wp_Optim_Main{
 	 * Wp_Optim_Main constructor.
 	 */
 	public function __construct() {
-		add_action('add_attachment', [ __CLASS__, 'add_attachment' ] );
+		//add_action('add_attachment', [ __CLASS__, 'add_attachment' ] );
 	}
 
 	public static function add_attachment($post_ID) {

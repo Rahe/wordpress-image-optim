@@ -21,7 +21,9 @@ include WP_OPTIM_DIR.'/libs/exec.php';
  */
 include WP_OPTIM_DIR.'/classes/image.php';
 include WP_OPTIM_DIR.'/classes/main.php';
-include WP_OPTIM_DIR.'/classes/optimizer.php';
+include WP_OPTIM_DIR.'/classes/services/basic.php';
+include WP_OPTIM_DIR.'/classes/optimizers/optimizer.php';
+include WP_OPTIM_DIR.'/classes/optimizers/optimizer-service.php';
 include WP_OPTIM_DIR.'/classes/stats.php';
 
 /**
@@ -59,3 +61,12 @@ function wp_image_optim_init() {
 	}
 
 }
+/*
+$service = new WP_Image_Optim_Service_Basic( [ 'url' => 'http://images.nicolas-juen.fr/upload', 'method' => 'POST' ] );
+
+$image = new WP_Image_Optim(get_post(1745));
+
+$optimizer = new WP_Image_Optim_Optimizer_Service( $service, $image );
+
+$optimizer->optimize();
+*/

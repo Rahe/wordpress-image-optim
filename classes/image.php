@@ -207,4 +207,8 @@ Class WP_Image_Optim {
 
 		return empty( $meta_data['sizes'] ) ? [] : $meta_data['sizes'];
 	}
+
+	public function get_mime_type() {
+		return get_post_mime_type( $this->attachment );
+	}
 }
