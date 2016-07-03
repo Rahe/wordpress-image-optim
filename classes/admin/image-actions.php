@@ -58,8 +58,6 @@ class Wp_Optim_Admin_Actions {
 			);
 			exit;
 		}
-		
-		$facotory = New Image
 
 		try {
 			$image = new WP_Image_Optim( get_post( $id ) );
