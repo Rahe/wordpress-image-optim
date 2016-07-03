@@ -54,7 +54,7 @@ class WP_Image_Optim_Optimizer {
 	 * @param $destination
 	 */
 	private function optimize_image( $file, $destination ) {
-		$command = sprintf( 'nodejs %s %s %s', WP_OPTIM_DIR . 'imageoptim.js', $file, $destination );
+		$command = sprintf( 'node %s %s %s', WP_OPTIM_DIR . 'imageoptim.js', $file, $destination );
 		shell_exec( escapeshellcmd( $command ) );
 		clearstatcache();
 	}
