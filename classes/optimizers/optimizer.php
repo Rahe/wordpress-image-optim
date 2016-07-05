@@ -1,5 +1,5 @@
 <?php
-class WP_Image_Optim_Optimizer {
+class WP_Image_Optim_Optimizer implements WP_Image_Optim_Optimizer_Interface {
 
 	/**
 	 * Image to optimize
@@ -9,12 +9,23 @@ class WP_Image_Optim_Optimizer {
 	private $image;
 
 	/**
+	 * Image to optimize
+	 *
+	 * @var WP_Image_Optim
+	 */
+	private $service;
+
+	/**
 	 * WP_Image_Optim_Optimizer constructor.
 	 *
 	 * @param WP_Image_Optim $image
 	 */
 	public function __construct( WP_Image_Optim $image ) {
 		$this->image = $image;
+	}
+
+	public function set_service( $service ) {
+		$this->service = $service;
 	}
 
 	/**
@@ -54,8 +65,6 @@ class WP_Image_Optim_Optimizer {
 	 * @param $destination
 	 */
 	private function optimize_image( $file, $destination ) {
-		$command = sprintf( 'node %s %s %s', WP_OPTIM_DIR . 'imageoptim.js', $file, $destination );
-		shell_exec( escapeshellcmd( $command ) );
-		clearstatcache();
+		$this->service->optimize( $this->image );
 	}
 }
